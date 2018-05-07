@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <title>TWEET HOT TOPICS</title>
+    <style>
+        .progress {
+            width: 100%;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>TWEET HOT TOPICS</h1>
+    <h2>Settings</h2>
+    By default, this web page will show our latest result.<br>
+    However, you can quickly go through our previous results, by setting the start time, time period(in minutes)
+    time interval(in minutes for result) and display interval(in seconds)
+    {% for message in get_flashed_messages() %}
+    <p style="color: red;">{{ message }}</p>
+    {% endfor %}
+    <form method="POST">
+      <p>Settings: <br>
+        start time <input type="text" name="start_time" value="{{ start_time }}">(format: YYYY-MM-DD_hour/minute, 2018-05-01_23/59)<br>
+        time period <input type="text" name="time_period" value="{{ time_period }}"> <br>
+        time interval <input type="text" name="time_interval" value="{{ time_interval }}"> <br>
+        display interval <input type="text" name="display_interval" value="{{ display_interval }}">
+      </p>
+      <input type="submit" name="set" value="set">
+    </form>
+    <hr>
+    <h2>Display Area</h2>
+    <!--<button onclick="start_long_task();">Start Long Calculation</button><br><br>-->
+    <button id="start-bg-job">go!</button><br><br>
+    <div id="progress"></div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        function start_long_task() {
+            // add task status elements
+            div = $('<div class="progress"><hr><div></div><div></div><hr>' +
+                '<div></div><div></div><hr>' + '<div></div><div></div><hr>'
+                + '<div></div><div></div><hr>' + '<div></div><div></div><hr>' +
+                '<div></div></div><hr>');
+            $('#progress').append(div);
+
+            // send ajax POST request to start background job
+            $.ajax({
+                type: 'POST',
+                url: '/updateNumber',
+                success: function(data, status, request) {
+                    status_url = request.getResponseHeader('Location');
+                    update_progress(status_url, div[0]);
+                },
+                error: function() {
+                    alert('Unexpected error');
+                }
+            });
+        }
+        function update_progress(status_url, status_div) {
+            // send GET request to status URL
+            $.getJSON(status_url, function(data) {
+                // update UI
+                // $(status_div.childNodes[1]).text(data['number']);
+                console.log(data)
+                $(status_div.childNodes[0]).text('TOPIC 0');
+                $(status_div.childNodes[1]).text(data['topics']['topic_0']);
+                $(status_div.childNodes[2]).text(data['sample_tweet']['topic_0']);
+
+                $(status_div.childNodes[3]).text('TOPIC 1');
+                $(status_div.childNodes[4]).text(data['topics']['topic_1']);
+                $(status_div.childNodes[5]).text(data['sample_tweet']['topic_1']);
+
+                $(status_div.childNodes[6]).text('TOPIC 2');
+                $(status_div.childNodes[7]).text(data['topics']['topic_2']);
+                $(status_div.childNodes[8]).text(data['sample_tweet']['topic_2']);
+
+                $(status_div.childNodes[9]).text('TOPIC 3');
+                $(status_div.childNodes[10]).text(data['topics']['topic_3']);
+                $(status_div.childNodes[11]).text(data['sample_tweet']['topic_3']);
+
+                $(status_div.childNodes[12]).text('TOPIC 4');
+                $(status_div.childNodes[13]).text(data['topics']['topic_4']);
+                $(status_div.childNodes[14]).text(data['sample_tweet']['topic_4']);
+                if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
+                    if ('result' in data)
+                    {
+                        // show result
+                        $(status_div.childNodes[16]).text('COMPLETE');
+                    }
+                    else {
+                        // something unexpected happened
+                        $(status_div.childNodes[16]).text('COMPLETE');
+                    }
+                }
+                else {
+                    // rerun in 2 seconds
+                    setTimeout(function() {
+                        update_progress(status_url, status_div);
+                    }, 200);
+                }
+            });
+        }
+        $(function() {
+            $('#start-bg-job').click(start_long_task);
+        });
+    </script>
+  </body>
+</html>
