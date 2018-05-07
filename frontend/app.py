@@ -29,15 +29,6 @@ celery.conf.update(app.config)
 
 
 @celery.task(bind=True)
-def update_number(self, n, start):
-    for i in range(n):
-        print start+i
-        self.update_state(state='PROGRESS', meta={'number': start+i})
-        time.sleep(1)
-    return {'number': start+i}
-
-
-@celery.task(bind=True)
 def update_topics(self):
     for i in range(10):
         read_file = open('setting.txt','r')
