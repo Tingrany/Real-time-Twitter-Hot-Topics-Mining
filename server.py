@@ -5,10 +5,10 @@ import datetime
 import json
 
 # Consumer keys and access tokens, used for OAuth
-consumer_key = 'aKdDTWw6dlkCxbm0hmn4XVlKZ'
-consumer_secret = 'ZPAJnZrGaIcaaNaL1Mp4imkBQtPB6AlhSS5zeZKHAnsStmlbo2'
-access_token = '727858600631242752-4wLtCoW4bdtWzX8p99LVQ7GMMhAMl2F'
-access_token_secret = 'yZBddIVXpyNj8KF0m37jjnmRzWwBCqiXGjBHjUdfKvknv'
+consumer_key = 'Your_consumer_key'
+consumer_secret = 'Your_consumer_secret'
+access_token = 'Your_access_token'
+access_token_secret = 'Your_access_token_secret'
  
 # OAuth process, using the keys and tokens
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
